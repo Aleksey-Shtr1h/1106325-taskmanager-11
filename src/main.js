@@ -376,23 +376,28 @@ const createLoadBtnTemplate = () => {
   );
 };
 
-const render = (container, template, place = `beforeend`) => {
+const renderTemplate = (container, template, place = `beforeend`) => {
   container.insertAdjacentHTML(place, template);
 };
 
-render(siteMainControlElement, createMenuTemplate());
-render(siteMainElement, createFilterTemplate());
-render(siteMainElement, createBoardTemplate());
+const getBasicBlock = () => {
+  renderTemplate(siteMainControlElement, createMenuTemplate());
+  renderTemplate(siteMainElement, createFilterTemplate());
+  renderTemplate(siteMainElement, createBoardTemplate());
+};
 
-const siteBoardElement = siteMainElement.querySelector(`.board`);
-const siteBoardTaskElement = siteBoardElement.querySelector(`.board__tasks`);
+const getMainContentSite = () => {
+  const siteBoardElement = siteMainElement.querySelector(`.board`);
+  const siteBoardTaskElement = siteBoardElement.querySelector(`.board__tasks`);
+  renderTemplate(siteBoardElement, createSortTemplate(), `afterbegin`);
+  renderTemplate(siteBoardTaskElement, createEditTaskTemplate());
 
-render(siteBoardElement, createSortTemplate(), `afterbegin`);
-render(siteBoardTaskElement, createEditTaskTemplate());
+  for (let i = 0; i < TASK_COUNT; i++) {
+    renderTemplate(siteBoardTaskElement, createCardTaskTemplate());
+  }
 
-for (let i = 0; i < TASK_COUNT; i++) {
-  render(siteBoardTaskElement, createCardTaskTemplate());
-}
+  renderTemplate(siteBoardTaskElement, createLoadBtnTemplate());
+};
 
-render(siteBoardTaskElement, createLoadBtnTemplate());
-
+getBasicBlock();
+getMainContentSite();
