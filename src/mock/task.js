@@ -1,6 +1,6 @@
-import {COLORS} from '../const.js';
+import {COLORS} from '../constants.js';
 
-const DescriptionItems = [
+const DESCRIPTION_ITEMS = [
   `Изучить теорию`,
   `Сделать домашку`,
   `Пройти интенсив на соточку`,
@@ -46,7 +46,7 @@ const generateTask = () => {
   const dueDate = Math.random() > 0.5 ? null : getRandomDate();
 
   return {
-    description: getRandomArrayItem(DescriptionItems),
+    description: getRandomArrayItem(DESCRIPTION_ITEMS),
     dueDate,
     repeatingDays: Object.assign({}, DefaultRepeatingDays, generateRepeatingDays()),
     color: getRandomArrayItem(COLORS),

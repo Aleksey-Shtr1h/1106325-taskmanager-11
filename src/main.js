@@ -8,6 +8,7 @@ import {createLoadBtnTemplate} from './components/create-site-loadBtn.js';
 
 import {generateFilters} from './mock/filter.js';
 import {generateTasks} from './mock/task.js';
+import {createPaginationTasks} from './pagination.js';
 
 const TASK_COUNT = 22;
 const SHOWING_TASKS_COUNT_ON_START = 8;
@@ -45,19 +46,14 @@ const getMainContentSite = () => {
 
   const loadMoreButton = siteBoardElement.querySelector(`.load-more`);
   loadMoreButton.addEventListener(`click`, () => {
-    const prevTasksCount = showingTasksCount;
-    showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
 
-    tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => {
-      return renderTemplate(siteBoardTaskElement, createCardTaskTemplate(task));
-    });
+    createPaginationTasks(tasks, loadMoreButton, renderTemplate, siteBoardTaskElement, createCardTaskTemplate);
 
-    if (showingTasksCount >= tasks.length) {
-      loadMoreButton.remove();
-    }
   });
 
 };
 
 getBasicBlock();
 getMainContentSite();
+
+export {SHOWING_TASKS_COUNT_BY_BUTTON};
