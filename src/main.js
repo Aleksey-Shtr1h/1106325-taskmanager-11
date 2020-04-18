@@ -14,7 +14,7 @@ import {generateTasks} from './mock/task.js';
 import {renderTemplate, RenderPosition} from './utils.js';
 import {createPaginationTasks} from './pagination.js';
 
-const TASK_COUNT = 22;
+const TASK_COUNT = 0;
 const SHOWING_TASKS_COUNT_ON_START = 8;
 const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
