@@ -1,19 +1,17 @@
-import {SHOWING_TASKS_COUNT_BY_BUTTON} from './main.js';
+import {renderTask} from './main.js';
 
-const SHOWING_TASKS_COUNT_ON_START = 8;
+export const createPaginationTasks = (tasks, loadBtn, container, showingTasksCount) => {
+  const SHOWING_TASKS_COUNT_BY_BUTTON = 8;
 
-let showingTasksCount = SHOWING_TASKS_COUNT_ON_START;
-
-export const createPaginationTasks = (tasks, loadBtn, renderFunction, container, createTasks) => {
   const prevTasksCount = showingTasksCount;
   showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
 
-  tasks.slice(prevTasksCount, showingTasksCount).forEach((task) => {
-    return renderFunction(container, createTasks(task));
-  });
+  tasks.slice(prevTasksCount, showingTasksCount)
+  .forEach((task) => renderTask(container, task));
 
   if (showingTasksCount >= tasks.length) {
-    loadBtn.remove();
+    loadBtn.getElement().remove();
+    loadBtn.removeElement();
   }
 
 };
