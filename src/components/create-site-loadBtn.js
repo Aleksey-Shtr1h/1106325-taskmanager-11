@@ -1,4 +1,4 @@
-import {createElement} from '../utils.js';
+import AbstractComponent from './abstract-component.js';
 
 const createLoadBtnTemplate = () => {
   return (
@@ -6,23 +6,13 @@ const createLoadBtnTemplate = () => {
   );
 };
 
-export default class LoadBtnTemplate {
-  constructor() {
-    this._element = null;
-  }
+export default class LoadBtnTemplate extends AbstractComponent {
 
   getTemplate() {
     return createLoadBtnTemplate();
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
+  setClickHandler(handler) {
+    this.getElement().addEventListener(`click`, handler);
   }
 }
