@@ -80,5 +80,3 @@ export default class TaskEdit extends AbstractComponent {
   }
 }
 
-// const editButton = taskComponent.getElement().querySelector(`.card__btn--edit`);
-//   editButton.addEventListener(`click`, () => {

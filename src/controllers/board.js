@@ -1,5 +1,5 @@
 import TasksComponent from '../components/create-site-blockTasks.js';
-import SortComponent from '../components/create-site-filters-sort.js';
+import SortComponent, {SortType} from '../components/create-site-filters-sort.js';
 import NoTasksComponent from '../components/create-site-no-tasks.js';
 import EditTaskComponent from '../components/create-site-editTask.js';
 import CardTaskComponent from '../components/create-site-cardTask.js';
@@ -16,7 +16,7 @@ const StatusCodesEsc = {
   ESC: `Esc`,
 };
 
-export const renderTask = (taskListElement, task) => {
+const renderTask = (taskListElement, task) => {
 
   const replaceTaskToEdit = () => {
     replaceTemplate(taskEditComponent, taskComponent);
@@ -52,6 +52,29 @@ export const renderTask = (taskListElement, task) => {
   renderTemplate(taskListElement, taskComponent, RenderPosition.BEFOREEND);
 };
 
+export const renderTasks = (taskListElement, tasks) => {
+  tasks.forEach((task) => renderTask(taskListElement, task));
+};
+
+const getSortedTasks = (tasks, sortType, from, to) => {
+  let sortedTasks = [];
+  const showingTasks = tasks.slice();
+
+  switch (sortType) {
+    case SortType.DATE_UP:
+      sortedTasks = showingTasks.sort((a, b) => a.dueDate - b.dueDate);
+      break;
+    case SortType.DATE_DOWN:
+      sortedTasks = showingTasks.sort((a, b) => b.dueDate - a.dueDate);
+      break;
+    case SortType.DEFAULT:
+      sortedTasks = showingTasks;
+      break;
+  }
+
+  return sortedTasks.slice(from, to);
+};
+
 export default class BoardController {
 
   constructor(container) {
@@ -63,6 +86,28 @@ export default class BoardController {
   }
 
   render(tasks) {
+
+    const renderLoadMoreBtn = () => {
+
+      if (showingTasksCount >= tasks.length) {
+        return;
+      }
+
+      renderTemplate(container, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
+
+
+      this._loadMoreButtonComponent.setClickHandler(() => {
+        const loadMoreBtnComponent = this._loadMoreButtonComponent;
+
+        const prevTasksCount = showingTasksCount;
+        showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+
+        const sortedTasks = getSortedTasks(tasks, this._sortComponent.getSortType(), prevTasksCount, showingTasksCount);
+
+        createPaginationTasks(tasks, loadMoreBtnComponent, taskListElement, sortedTasks, showingTasksCount);
+      });
+    };
+
     const container = this._container.getElement();
     const areAllTasksArchived = tasks.every((task) => task.isArchive);
 
@@ -82,14 +127,19 @@ export default class BoardController {
       renderTask(taskListElement, task);
     });
 
-    renderTemplate(container, this._loadMoreButtonComponent, RenderPosition.BEFOREEND);
+    renderLoadMoreBtn();
 
+    this._sortComponent.setSortTypeChangeHandler((sortType) => {
+      showingTasksCount = SHOWING_TASKS_COUNT_BY_BUTTON;
 
-    this._loadMoreButtonComponent.setClickHandler(() => {
-      const loadMoreBtnComponent = this._loadMoreButtonComponent;
+      const sortedTasks = getSortedTasks(tasks, sortType, 0, showingTasksCount);
+      taskListElement.innerHTML = ``;
 
-      createPaginationTasks(tasks, loadMoreBtnComponent, taskListElement, showingTasksCount);
-      showingTasksCount = showingTasksCount + SHOWING_TASKS_COUNT_BY_BUTTON;
+      sortedTasks.slice(0, showingTasksCount)
+      .forEach((task) => {
+        renderTask(taskListElement, task);
+      });
+      renderLoadMoreBtn();
     });
   }
 }
