@@ -3,12 +3,12 @@ import CardTaskComponent from '../components/create-site-cardTask.js';
 
 import {renderTemplate, replaceTemplate, RenderPosition} from '../utils/render.js';
 
-const Mode = {
+const Modes = {
   DEFAULT: `default`,
   EDIT: `edit`,
 };
 
-const StatusCodesEsc = {
+const EscapeKey = {
   ESCAPE: `Escape`,
   ESC: `Esc`,
 };
@@ -19,7 +19,7 @@ export default class TaskController {
     this._onDataChange = onDataChange;
 
     this._onViewChange = onViewChange;
-    this._mode = Mode.DEFAULT;
+    this._mode = Modes.DEFAULT;
 
     this._taskComponent = null;
     this._taskEditComponent = null;
@@ -66,7 +66,7 @@ export default class TaskController {
   }
 
   setDefaultView() {
-    if (this._mode !== Mode.DEFAULT) {
+    if (this._mode !== Modes.DEFAULT) {
       this._replaceEditToTask();
     }
   }
@@ -74,24 +74,21 @@ export default class TaskController {
   _replaceTaskToEdit() {
     this._onViewChange();
     replaceTemplate(this._taskEditComponent, this._taskComponent);
-    this._mode = Mode.EDIT;
+    this._mode = Modes.EDIT;
   }
 
   _replaceEditToTask() {
     document.removeEventListener(`keydown`, this._onEscKeyDown);
     this._taskEditComponent.reset();
     replaceTemplate(this._taskComponent, this._taskEditComponent);
-    this._mode = Mode.DEFAULT;
+    this._mode = Modes.DEFAULT;
   }
 
   _onEscKeyDown(evt) {
-    const isEscKay = evt.key === StatusCodesEsc.ESCAPE || StatusCodesEsc.ESC;
-    if (isEscKay) {
+    const isEscKey = evt.key === EscapeKey.ESCAPE;
+    if (isEscKey) {
       this._replaceEditToTask();
       document.removeEventListener(`keydown`, this._onEscKeyDown);
     }
-
   }
-
-
 }

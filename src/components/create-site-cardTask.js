@@ -89,6 +89,5 @@ export default class TaskEdit extends AbstractComponent {
   setFavoritesButtonClickHandler(handler) {
     this.getElement().querySelector(`.card__btn--favorites`).addEventListener(`click`, handler);
   }
-
 }
 

@@ -145,12 +145,13 @@ export default class Task extends AbstractSmartComponent {
   constructor(task) {
     super();
     this._task = task;
+
     this._isDateShowing = !!task.dueDate;
     this._isRepeatingTask = Object.values(task.repeatingDays).some(Boolean);
     this._activeRepeatingDays = Object.assign({}, task.repeatingDays);
 
-
     this._submitHandler = null;
+
     this._subscribeOnEvents();
   }
 
@@ -187,23 +188,23 @@ export default class Task extends AbstractSmartComponent {
   }
 
   _subscribeOnEvents() {
-    const element = this.getElement();
+    const cardTaskElement = this.getElement();
+    const dateDeadlineElement = cardTaskElement.querySelector(`.card__date-deadline-toggle`);
+    const repeatElement = cardTaskElement.querySelector(`.card__repeat-toggle`);
 
-    element.querySelector(`.card__date-deadline-toggle`)
-    .addEventListener(`click`, () => {
+    dateDeadlineElement.addEventListener(`click`, () => {
       this._isDateShowing = !this._isDateShowing;
 
       this.rerender();
     });
 
-    element.querySelector(`.card__repeat-toggle`)
-    .addEventListener(`click`, () => {
+    repeatElement.addEventListener(`click`, () => {
       this._isRepeatingTask = !this._isRepeatingTask;
 
       this.rerender();
     });
 
-    const repeatDays = element.querySelector(`.card__repeat-days`);
+    const repeatDays = cardTaskElement.querySelector(`.card__repeat-days`);
     if (repeatDays) {
       repeatDays.addEventListener(`change`, (evt) => {
         this._activeRepeatingDays[evt.target.value] = evt.target.checked;
